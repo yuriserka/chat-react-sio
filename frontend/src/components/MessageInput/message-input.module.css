@@ -1,0 +1,23 @@
+.input-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0.5rem;
+}
+
+.input-field input {
+  outline: none;
+  width: 95%;
+  font-size: 16px;
+  border-radius: 20px;
+  background: #fff;
+  height: 2rem;
+  padding: 1rem 0.5rem;
+  border: 1px solid black;
+}
+
+.send-icon {
+  font-size: 32px;
+  display: flex;
+  padding-left: 5px;
+}

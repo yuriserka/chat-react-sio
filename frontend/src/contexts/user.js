@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 export const UserContext = React.createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(() => (
-    { username: localStorage.getItem('@chat:username') }
-  ));
+  const [user, setUser] = useState(() => ({
+    username: localStorage.getItem("@chat:username"),
+  }));
 
   function login(user) {
     setUser(user);
-    localStorage.setItem('@chat:username', user.username);
+    localStorage.setItem("@chat:username", user.username);
   }
 
   function logout() {
     setUser(null);
-    localStorage.removeItem('@chat:username');
+    localStorage.removeItem("@chat:username");
   }
 
   return (
@@ -22,4 +22,4 @@ export const UserProvider = ({ children }) => {
       {children}
     </UserContext.Provider>
   );
-}
+};

@@ -1,15 +1,15 @@
-import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { UserContext } from '../../contexts/user';
-import useForm from '../../hooks/useForm';
-import styles from './landing.module.css';
+import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom";
+import { UserContext } from "../../contexts/user";
+import useForm from "../../hooks/useForm";
+import styles from "./landing.module.css";
 
-const Landing = () => {
+export default function LandingPage() {
   const { user, login } = useContext(UserContext);
 
   const [form, onFormChange] = useForm({
-    username: user?.username ?? '',
-    room: '',
+    username: user?.username ?? "",
+    room: "",
   });
 
   const [error, setError] = useState(null);
@@ -19,7 +19,7 @@ const Landing = () => {
 
     if (!username || !room) {
       event.preventDefault();
-      setError('Username and Room are required');
+      setError("Username and Room are required");
       return;
     }
 
@@ -28,20 +28,18 @@ const Landing = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>
-        Join a room
-      </h1>
+      <h1 className={styles.title}>Join a room</h1>
       <div className={styles.form}>
         <form autoComplete="off">
-          <div className={styles['input-field']}>
+          <div className={styles["input-field"]}>
             <input
-              value={form['username']}
+              value={form["username"]}
               placeholder="Enter your name"
               name="username"
               onChange={onFormChange}
             />
           </div>
-          <div className={styles['input-field']}>
+          <div className={styles["input-field"]}>
             <input
               placeholder="Enter the room name"
               name="room"
@@ -52,10 +50,10 @@ const Landing = () => {
           <div>
             <Link to={`/chat?room=${form.room}`}>
               <button
-                className={styles['submit-btn']}
+                className={styles["submit-btn"]}
                 type="submit"
                 onClick={onSubmit}
-                children={'Sign in'}
+                children={"Sign in"}
               />
             </Link>
           </div>
@@ -63,6 +61,4 @@ const Landing = () => {
       </div>
     </div>
   );
-};
-
-export default Landing;
+}

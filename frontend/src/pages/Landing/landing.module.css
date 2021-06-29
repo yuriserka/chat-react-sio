@@ -22,7 +22,7 @@
   margin: 60px auto;
   padding: 64px;
   max-width: 730px;
-  background: #FFF;
+  background: #fff;
   border-radius: 8px;
 
   display: flex;
@@ -39,11 +39,11 @@
 
 .input-field input {
   flex: 1;
-  background: #F0F0F5;
+  background: #f0f0f5;
   border-radius: 8px;
   padding: 16px 24px;
   font-size: 16px;
-  color: #6C6C80;
+  color: #6c6c80;
 }
 
 .submit-btn {
@@ -51,7 +51,7 @@
   height: 56px;
   background: var(--primary-color);
   border-radius: 8px;
-  color: #FFF;
+  color: #fff;
   font-weight: bold;
   font-size: 16px;
   border: 0;

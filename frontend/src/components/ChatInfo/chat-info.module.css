@@ -1,0 +1,50 @@
+.info-bar {
+  background-color: rgb(71, 63, 114);
+  height: 3.2rem;
+  padding: 1.2rem;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.indicator {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 1.2rem;
+}
+
+.online {
+  background: #28b62c;
+  border-radius: 50%;
+  animation: pulse-animation 2s infinite linear;
+}
+
+@keyframes pulse-animation {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  75% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.offline {
+  background: #ff4136;
+}
