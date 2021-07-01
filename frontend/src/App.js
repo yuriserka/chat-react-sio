@@ -1,21 +1,31 @@
-import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import "./App.css";
-import { UserProvider } from "./contexts/user";
-import Chat from "./pages/Chat";
-import Landing from "./pages/Landing";
+import { unwrapResult } from "@reduxjs/toolkit";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { Route, Switch, useHistory } from "react-router-dom";
+import ChatPage from "./pages/Chat";
+import LandingPage from "./pages/Landing";
+import LoginPage from "./pages/Login";
+import { attemptLogin } from "./store/auth.slice";
 
-const App = () => {
+export default function App() {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  useEffect(() => {
+    dispatch(attemptLogin())
+      .then(unwrapResult)
+      .then((user) => {
+        if (user) history.replace("/app");
+        else history.replace("/");
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <BrowserRouter>
-      <Switch>
-        <UserProvider>
-          <Route path="/" exact component={Landing} />
-          <Route path="/chat" component={Chat} />
-        </UserProvider>
-      </Switch>
-    </BrowserRouter>
+    <Switch>
+      <Route path="/" exact component={LoginPage} />
+      <Route path="/app" exact component={LandingPage} />
+      <Route path="/chat" component={ChatPage} />
+    </Switch>
   );
-};
-
-export default App;
+}

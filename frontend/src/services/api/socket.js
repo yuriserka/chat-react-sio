@@ -6,29 +6,40 @@ const socket = io(ENDPOINT, {
   transports: ["websocket", "polling", "flashsocket"],
 });
 
-export const initiateSocket = (username, room, cb) => {
+export function initiateSocket(username, room, cb) {
   console.log("Connecting socket...");
   if (socket && room) {
-    socket.emit("join", { username, room }, cb);
+    socket.emit(
+      "join",
+      {
+        user: {
+          username,
+          password: "123",
+          nickname: `${username}-nickname`,
+        },
+        room,
+      },
+      cb
+    );
     console.log(`joined room: ${room}`);
   }
-};
+}
 
-export const disconnectSocket = () => {
+export function disconnectSocket() {
   console.log("Disconnecting socket...");
   if (socket) socket.disconnect();
-};
+}
 
-export const subscribeToChat = (cb) => {
+export function subscribeToChat(cb) {
   if (!socket) return;
 
   socket.on("message", (msg) => {
     cb(msg);
   });
-};
+}
 
-export const sendMessage = (message, cb) => {
+export function sendMessage(message, cb) {
   if (!socket) return;
 
   socket.emit("sendMessage", message, cb);
-};
+}

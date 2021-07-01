@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaAngleRight } from "react-icons/fa";
-import { sendMessage } from "../../services/api";
+import { sendMessage } from "../../services/api/socket";
 import styles from "./message-input.module.css";
 
 export default function MessageInput() {

@@ -13,7 +13,9 @@ export default function MessageList({ user, messages }) {
     <div className={styles["messages-list-container"]}>
       <div className={styles.messages}>
         {messages.map((m) => {
-          const sent = m.username === user.username.trim().toLowerCase();
+          const { nickname } = m.author;
+          const sent = nickname === user.nickname;
+          console.log(m);
           return (
             <div
               className={`${styles[sent ? "sent" : "received"]} ${
@@ -21,8 +23,8 @@ export default function MessageList({ user, messages }) {
               }`}
               key={m.id}
             >
-              {!sent && <h3>{m.username}</h3>}
-              <span>{ReactEmoji.emojify(m.text)}</span>
+              {!sent && <h3>{nickname}</h3>}
+              <span>{ReactEmoji.emojify(m.content)}</span>
             </div>
           );
         })}

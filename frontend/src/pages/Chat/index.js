@@ -1,5 +1,5 @@
 import queryString from "query-string";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import ChatInfo from "../../components/ChatInfo";
 import MessageInput from "../../components/MessageInput";
@@ -9,8 +9,7 @@ import {
   disconnectSocket,
   initiateSocket,
   subscribeToChat,
-} from "../../services/api";
-import styles from "./chat.module.css";
+} from "../../services/api/socket";
 
 export default function ChatPage({ location }) {
   const [actualRoom, setActualRoom] = useState("");
@@ -48,9 +47,9 @@ export default function ChatPage({ location }) {
   }, [user, actualRoom, push]);
 
   return (
-    <div className={styles.container}>
-      <div className={styles["chat-container"]}>
-        <div className={styles.chat}>
+    <div>
+      <div>
+        <div>
           <ChatInfo room={actualRoom} onLogout={logout} />
           <MessageList {...{ user, messages }} />
           <MessageInput />
