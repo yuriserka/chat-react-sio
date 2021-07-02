@@ -2,26 +2,18 @@ import io from "socket.io-client";
 
 const ENDPOINT = "http://localhost:3131";
 
-const socket = io(ENDPOINT, {
-  transports: ["websocket", "polling", "flashsocket"],
-});
+let socket;
 
-export function initiateSocket(username, room, cb) {
+export function initiateSocket(userId, roomId, cb) {
   console.log("Connecting socket...");
-  if (socket && room) {
-    socket.emit(
-      "join",
-      {
-        user: {
-          username,
-          password: "123",
-          nickname: `${username}-nickname`,
-        },
-        room,
-      },
-      cb
-    );
-    console.log(`joined room: ${room}`);
+
+  socket = io(ENDPOINT, {
+    transports: ["websocket", "polling", "flashsocket"],
+  });
+
+  if (socket && roomId) {
+    socket.emit("join", { userId, roomId }, cb);
+    console.log(`joined room: ${roomId}`);
   }
 }
 
@@ -34,12 +26,21 @@ export function subscribeToChat(cb) {
   if (!socket) return;
 
   socket.on("message", (msg) => {
+    console.log("received a message");
     cb(msg);
   });
 }
 
-export function sendMessage(message, cb) {
+export function sendMessage({ userId, roomId, content }, cb) {
   if (!socket) return;
 
-  socket.emit("sendMessage", message, cb);
+  socket.emit(
+    "sendMessage",
+    {
+      userId,
+      roomId,
+      content,
+    },
+    cb
+  );
 }

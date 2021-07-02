@@ -2,30 +2,29 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Switch, useHistory } from "react-router-dom";
-import ChatPage from "./pages/Chat";
-import LandingPage from "./pages/Landing";
-import LoginPage from "./pages/Login";
+import ChatPage from "./pages/chat";
+import LandingPage from "./pages/landing";
+import LoginPage from "./pages/login";
 import { attemptLogin } from "./store/auth.slice";
+import { redirectUserAfterLogin } from "./util/redirect-after-login";
 
 export default function App() {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const { replace } = useHistory();
 
   useEffect(() => {
     dispatch(attemptLogin())
       .then(unwrapResult)
-      .then((user) => {
-        if (user) history.replace("/app");
-        else history.replace("/");
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      .then((user) => redirectUserAfterLogin(user, replace, dispatch));
+  }, [replace, dispatch]);
 
   return (
-    <Switch>
-      <Route path="/" exact component={LoginPage} />
-      <Route path="/app" exact component={LandingPage} />
-      <Route path="/chat" component={ChatPage} />
-    </Switch>
+    <div className="tracking-wide">
+      <Switch>
+        <Route path="/" exact component={LoginPage} />
+        <Route path="/app" exact component={LandingPage} />
+        <Route path="/chat" exact component={ChatPage} />
+      </Switch>
+    </div>
   );
 }

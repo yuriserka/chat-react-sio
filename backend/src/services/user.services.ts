@@ -8,7 +8,11 @@ export function findUserByUsername(username: string) {
     },
     include: {
       messages: true,
-      rooms: true,
+      rooms: {
+        include: {
+          messages: true,
+        },
+      },
     },
   });
 }
@@ -20,14 +24,24 @@ export function findUserById(id: string) {
     },
     include: {
       messages: true,
-      rooms: true,
+      rooms: {
+        include: {
+          messages: true,
+        },
+      },
     },
   });
 }
 
-export function createUser(user: Prisma.UserCreateInput) {
-  return database.user.create({
-    data: user,
+export function findOrCreateUser(user: Prisma.UserCreateInput) {
+  return database.user.upsert({
+    create: {
+      ...user,
+    },
+    where: {
+      id: user?.id ?? "",
+    },
+    update: {},
     include: {
       messages: true,
       rooms: true,

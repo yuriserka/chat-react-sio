@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { onJoin, onSendMessage, onDelete } from "./functions";
+import { onDelete, onJoin, onSendMessage } from "./functions";
 
 export function ChatSocketHandler(socket: Socket) {
   socket.on("join", (args, cb) => onJoin(socket, args, cb));

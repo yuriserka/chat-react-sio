@@ -2,12 +2,13 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import useForm from "../../hooks/useForm";
-import { login } from "../../store/auth.slice";
+import useForm from "../hooks/useForm";
+import { login } from "../store/auth.slice";
+import { redirectUserAfterLogin } from "../util/redirect-after-login";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const { replace } = useHistory();
 
   const [form, onFormChange] = useForm({
     username: "",
@@ -28,9 +29,7 @@ export default function LoginPage() {
 
     dispatch(login(form))
       .then(unwrapResult)
-      .then((user) => {
-        user && history.replace("/app");
-      });
+      .then((user) => redirectUserAfterLogin(user, replace, dispatch));
   }
 
   return (

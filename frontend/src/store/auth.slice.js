@@ -14,7 +14,7 @@ export const attemptLogin = createAsyncThunk("auth/attempt-login", async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return data;
+    return { ...data, token };
   }
   return null;
 });
@@ -25,7 +25,12 @@ const authSlice = createSlice({
     user: null,
     isLoggingIn: false,
   },
-  reducers: {},
+  reducers: {
+    logout: (state, _) => {
+      state.user = null;
+      localStorage.removeItem("@chat-sio:token");
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state, _) => {
@@ -48,5 +53,8 @@ const authSlice = createSlice({
 
 export const authReducer = authSlice.reducer;
 
+export const { logout } = authSlice.actions;
+
 export const selectUser = (state) => state.auth.user;
+
 export const selectIsLoggingIn = (state) => state.auth.isLoggingIn;

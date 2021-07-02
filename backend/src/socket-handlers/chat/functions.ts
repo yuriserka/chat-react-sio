@@ -3,20 +3,12 @@ import {
   createAdminMessage,
   createMessage,
 } from "../../services/message.services";
-import { FindOrCreateRoom } from "../../services/room.services";
-import {
-  deleteUser,
-  findUserById,
-  joinUserInRoom,
-} from "../../services/user.services";
+import { findRoomById } from "../../services/room.services";
+import { deleteUser, findUserById } from "../../services/user.services";
 
 type JoinPayload = {
-  user: {
-    username: string;
-    password: string;
-    nickname: string;
-  };
-  room: string;
+  userId: string;
+  roomId: string;
 };
 
 export async function onJoin(
@@ -25,33 +17,33 @@ export async function onJoin(
   cb: Function
 ) {
   try {
-    const room = await FindOrCreateRoom(payload.room);
-    const user = await joinUserInRoom({
-      ...payload.user,
-      rooms: {
-        connect: {
-          id: room.id,
-        },
-      },
-    });
+    const room = await findRoomById(payload.roomId);
+    const user = await findUserById(payload.userId);
+
+    if (!room) {
+      return cb({ message: "room dont exist yet" }, null);
+    }
+
+    if (!user) {
+      return cb({ message: "user dont exist yet" }, null);
+    }
+
+    cb(null, room);
 
     socket.emit(
       "message",
-      createAdminMessage(
-        `${user.username}, welcome to the room ${payload.room}!`
-      )
+      createAdminMessage(`${user?.username}, welcome to the room ${room.name}!`)
     );
 
     socket.broadcast
       .to(room.id)
-      .emit("message", createAdminMessage(`${user.nickname}, has joined!`));
+      .emit("message", createAdminMessage(`${user?.nickname}, has joined!`));
 
     socket.join(room.id);
-
-    console.log(`${payload.user.username} connected to chat: ${payload.room}`);
-    cb(null);
+    console.log(`${user?.username} connected to chat: ${room.name}`);
   } catch (error) {
-    cb({ message: error.message });
+    console.error({ error });
+    cb({ message: error.message }, null);
   }
 }
 
@@ -69,25 +61,25 @@ export async function onSendMessage(
   const user = await findUserById(payload.userId);
   const room = user?.rooms.find((r) => r.id === payload.roomId);
 
-  user &&
-    room &&
-    socket.to(room.id).emit(
-      "message",
-      createMessage({
-        content: payload.content,
-        author: {
-          connect: {
-            id: user.id,
-          },
+  if (user && room) {
+    const message = await createMessage({
+      content: payload.content,
+      author: {
+        connect: {
+          id: user.id,
         },
-        room: {
-          connect: {
-            id: room.id,
-          },
+      },
+      room: {
+        connect: {
+          id: room.id,
         },
-      })
-    );
-  cb();
+      },
+    });
+    socket.to(room.id).emit("message", message);
+    cb(null, message);
+  } else {
+    cb({ message: "user or room not found" }, null);
+  }
 }
 
 type DisconnectPayload = {
@@ -98,7 +90,7 @@ type DisconnectPayload = {
 export async function onDelete(
   socket: Socket,
   payload: DisconnectPayload,
-  cb: Function
+  cb?: Function
 ) {
   const user = await deleteUser(payload.userId);
   if (user) {
@@ -106,6 +98,6 @@ export async function onDelete(
       .to(payload.roomId)
       .emit("message", createAdminMessage(`${user.nickname} has left!`));
     console.log(`${user.username} disconnected`);
-    cb();
+    cb?.();
   }
 }
