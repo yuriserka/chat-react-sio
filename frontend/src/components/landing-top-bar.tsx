@@ -1,17 +1,18 @@
 import { FaArrowLeft, FaRegComments } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { useAppDispatch } from "../store";
 import { logout, selectUser } from "../store/auth.slice";
 import { quitChat } from "../store/chat.slice";
 
 export default function TopBar() {
   const user = useSelector(selectUser);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { replace } = useHistory();
 
   function onLogout() {
-    dispatch(logout());
-    dispatch(quitChat());
+    dispatch(logout);
+    dispatch(quitChat);
     replace("/");
   }
 

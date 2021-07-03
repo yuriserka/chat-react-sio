@@ -1,15 +1,15 @@
 import { unwrapResult } from "@reduxjs/toolkit";
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
 import ChatPage from "./pages/chat";
 import LandingPage from "./pages/landing";
 import LoginPage from "./pages/login";
+import { useAppDispatch } from "./store";
 import { attemptLogin } from "./store/auth.slice";
 import { redirectUserAfterLogin } from "./util/redirect-after-login";
 
 export default function App() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { replace } = useHistory();
 
   useEffect(() => {

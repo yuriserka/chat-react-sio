@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
-import RoomsList from "../components/roomsList";
+import RoomList from "../components/room-list";
 import Spinner from "../components/spinner";
-import TopBar from "../components/topBar";
+import LandingTopBar from "../components/landing-top-bar";
 import { selectIsLoggingIn } from "../store/auth.slice";
 import { selectFetchingChats } from "../store/chat.slice";
 
@@ -16,9 +16,9 @@ export default function LandingPage() {
   return (
     <div className="flex h-screen flex-col">
       <div className="w-screen">
-        <TopBar />
+        <LandingTopBar />
       </div>
-      <RoomsList />
+      <RoomList />
     </div>
   );
 }

@@ -1,10 +1,15 @@
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
+import { Message } from "../../models/message";
 
 const ENDPOINT = "http://localhost:3131";
 
-let socket;
+let socket: Socket;
 
-export function initiateSocket(userId, roomId, cb) {
+export function initiateSocket(
+  userId: string,
+  roomId: string,
+  cb: (error: any) => void
+) {
   console.log("Connecting socket...");
 
   socket = io(ENDPOINT, {
@@ -22,7 +27,7 @@ export function disconnectSocket() {
   if (socket) socket.disconnect();
 }
 
-export function subscribeToChat(cb) {
+export function subscribeToChat(cb: (message: Message) => void) {
   if (!socket) return;
 
   socket.on("message", (msg) => {
@@ -31,16 +36,17 @@ export function subscribeToChat(cb) {
   });
 }
 
-export function sendMessage({ userId, roomId, content }, cb) {
+type SendMessageArgs = {
+  userId: string;
+  roomId: string;
+  content: string;
+};
+
+export function sendMessage(
+  { userId, roomId, content }: SendMessageArgs,
+  cb: (error: any, message: Message) => void
+) {
   if (!socket) return;
 
-  socket.emit(
-    "sendMessage",
-    {
-      userId,
-      roomId,
-      content,
-    },
-    cb
-  );
+  socket.emit("sendMessage", { userId, roomId, content }, cb);
 }

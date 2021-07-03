@@ -1,13 +1,13 @@
 import { unwrapResult } from "@reduxjs/toolkit";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { FormEvent, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useForm from "../hooks/useForm";
+import { useAppDispatch } from "../store";
 import { login } from "../store/auth.slice";
 import { redirectUserAfterLogin } from "../util/redirect-after-login";
 
 export default function LoginPage() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { replace } = useHistory();
 
   const [form, onFormChange] = useForm({
@@ -16,9 +16,9 @@ export default function LoginPage() {
     password: "",
   });
 
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  function onSubmit(event) {
+  function onSubmit(event: FormEvent) {
     event.preventDefault();
     const { username, nickname, password } = form;
 
