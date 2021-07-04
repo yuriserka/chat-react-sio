@@ -1,9 +1,9 @@
+import RoomList from "@components/landing/room-list";
+import LandingTopBar from "@components/landing/top-bar";
+import Spinner from "@components/spinner";
+import { selectIsLoggingIn } from "@store/auth.slice";
+import { selectFetchingChats } from "@store/chat.slice";
 import { useSelector } from "react-redux";
-import RoomList from "../components/room-list";
-import Spinner from "../components/spinner";
-import LandingTopBar from "../components/landing-top-bar";
-import { selectIsLoggingIn } from "../store/auth.slice";
-import { selectFetchingChats } from "../store/chat.slice";
 
 export default function LandingPage() {
   const isLoggingIn = useSelector(selectIsLoggingIn);
@@ -15,9 +15,7 @@ export default function LandingPage() {
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="w-screen">
-        <LandingTopBar />
-      </div>
+      <LandingTopBar />
       <RoomList />
     </div>
   );

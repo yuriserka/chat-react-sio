@@ -1,4 +1,4 @@
-import { Message } from "../models/message";
+import { Message } from "@models/message";
 
 function lastIndexOf<T>(array: T[], comp: (item: T) => boolean) {
   for (let i = array.length - 1; i >= 0; i--) {
@@ -7,7 +7,7 @@ function lastIndexOf<T>(array: T[], comp: (item: T) => boolean) {
   return -1;
 }
 
-export function takeLastMessage(messages: Message[]) {
+export function takeLastNotAdminMessage(messages: Message[]) {
   if (!messages) return null;
 
   const idx = lastIndexOf(messages, (m) => m.author.nickname !== "admin");

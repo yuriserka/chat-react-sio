@@ -1,10 +1,10 @@
+import { emitEventSendMessage } from "@services/api/socket";
+import { selectUser } from "@store/auth.slice";
+import { selectActualChat, sendNewMessage } from "@store/chat.slice";
+import { useAppDispatch } from "@store/index";
 import { useState } from "react";
 import { FaAngleRight } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { sendMessage } from "../services/api/socket";
-import { useAppDispatch } from "../store";
-import { selectUser } from "../store/auth.slice";
-import { receiveMessage, selectActualChat } from "../store/chat.slice";
 
 export default function MessageInput() {
   const [message, setMessage] = useState("");
@@ -14,18 +14,14 @@ export default function MessageInput() {
 
   function onSubmit() {
     if (message.length) {
-      sendMessage(
-        {
-          content: message,
-          roomId,
-          userId,
-        },
+      emitEventSendMessage(
+        { content: message, roomId, userId },
         (err, messageSent) => {
           if (err) {
             console.error({ err });
             return;
           }
-          dispatch(receiveMessage(messageSent));
+          dispatch(sendNewMessage(messageSent));
           setMessage("");
         }
       );
@@ -33,7 +29,7 @@ export default function MessageInput() {
   }
 
   return (
-    <div className="flex items-center justify-between mt-4 bg-gradient-to-r from-purple-300 to-purple-600 via-indigo-400 animate-gradient-x">
+    <div className="bottom-0 fixed w-full flex items-center justify-between mt-4 bg-gradient-to-r from-purple-300 to-purple-600 via-indigo-400 animate-gradient-x">
       <input
         className="rounded-full m-2 w-full"
         type="text"

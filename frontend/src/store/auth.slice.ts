@@ -1,7 +1,7 @@
+import { User } from "@models/user";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from ".";
-import { User } from "../models/user";
-import { api } from "../services/api/axios";
+import { api } from "@services/api/axios";
+import { RootState } from "./index";
 
 type LoginForm = {
   username: string;

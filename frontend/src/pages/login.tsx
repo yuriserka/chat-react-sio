@@ -1,10 +1,10 @@
+import useForm from "@hooks/useForm";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { login } from "@store/auth.slice";
+import { useAppDispatch } from "@store/index";
+import { redirectUserAfterLogin } from "@utils/redirect-after-login";
 import { FormEvent, useState } from "react";
 import { useHistory } from "react-router-dom";
-import useForm from "../hooks/useForm";
-import { useAppDispatch } from "../store";
-import { login } from "../store/auth.slice";
-import { redirectUserAfterLogin } from "../util/redirect-after-login";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();

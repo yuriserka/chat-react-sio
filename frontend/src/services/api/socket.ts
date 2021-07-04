@@ -1,39 +1,41 @@
+import { Message } from "@models/message";
+import { Room } from "@models/room";
 import io, { Socket } from "socket.io-client";
-import { Message } from "../../models/message";
 
 const ENDPOINT = "http://localhost:3131";
 
 let socket: Socket;
 
-export function initiateSocket(
-  userId: string,
-  roomId: string,
-  cb: (error: any) => void
-) {
+export function emitEventInitSocket(cb: (socket: Socket, error: any) => void) {
   console.log("Connecting socket...");
 
   socket = io(ENDPOINT, {
     transports: ["websocket", "polling", "flashsocket"],
   });
 
+  socket.emit("init-connection", null, cb);
+}
+
+export function emitEventJoinRoom(
+  userId: string,
+  roomId: string,
+  cb: (error: any) => void
+) {
   if (socket && roomId) {
     socket.emit("join", { userId, roomId }, cb);
     console.log(`joined room: ${roomId}`);
   }
 }
 
-export function disconnectSocket() {
+export function emitEventDisconnect() {
   console.log("Disconnecting socket...");
   if (socket) socket.disconnect();
 }
 
-export function subscribeToChat(cb: (message: Message) => void) {
+export function ListenToOnMessageEvent(cb: (message: Message) => void) {
   if (!socket) return;
 
-  socket.on("message", (msg) => {
-    console.log("received a message");
-    cb(msg);
-  });
+  socket.on("message", cb);
 }
 
 type SendMessageArgs = {
@@ -42,11 +44,39 @@ type SendMessageArgs = {
   content: string;
 };
 
-export function sendMessage(
+export function emitEventSendMessage(
   { userId, roomId, content }: SendMessageArgs,
   cb: (error: any, message: Message) => void
 ) {
   if (!socket) return;
 
-  socket.emit("sendMessage", { userId, roomId, content }, cb);
+  socket.emit("send-message", { userId, roomId, content }, cb);
+}
+
+type NewRoomArgs = {
+  userId: string;
+  name: string;
+};
+
+export function emitEventNewRoom(
+  { name, userId }: NewRoomArgs,
+  cb: (error: any, room: Room) => void
+) {
+  if (!socket) return;
+
+  socket.emit("new-room", { name, userId }, cb);
+}
+
+type LeaveArgs = {
+  userId: string;
+  roomId: string;
+};
+
+export function emitEventLeaveChat(
+  { roomId, userId }: LeaveArgs,
+  cb: (error: any) => void
+) {
+  if (!socket) return;
+
+  socket.emit("leave", { roomId, userId }, cb);
 }

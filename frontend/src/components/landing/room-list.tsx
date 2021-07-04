@@ -1,10 +1,10 @@
+import { selectChats, setCurrentChat } from "@store/chat.slice";
+import { useAppDispatch } from "@store/index";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useAppDispatch } from "../store";
-import { selectChats, setCurrentChat } from "../store/chat.slice";
 import RoomTile from "./room-tile";
 
-export default function RoomsList() {
+export default function RoomList() {
   const rooms = useSelector(selectChats);
   const dispatch = useAppDispatch();
 
@@ -19,7 +19,7 @@ export default function RoomsList() {
               dispatch(setCurrentChat(index));
             }}
           >
-            <RoomTile {...{ room }} />
+            <RoomTile {...{ room, counter: index }} />
           </Link>
         );
       })}

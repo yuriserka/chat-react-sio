@@ -1,8 +1,8 @@
+import { Message } from "@models/message";
+import { Room } from "@models/room";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from ".";
-import { Message } from "../models/message";
-import { Room } from "../models/room";
-import { api } from "../services/api/axios";
+import { api } from "@services/api/axios";
+import { RootState } from "./index";
 
 export const getAvailableRooms = createAsyncThunk(
   "chat/get-available-rooms",
@@ -39,6 +39,12 @@ const chatSlice = createSlice({
     receiveMessage: (state, { payload }: PayloadAction<Message>) => {
       state.availableRooms?.[state.selectedChatIndex].messages.push(payload);
     },
+    sendNewMessage: (state, { payload }: PayloadAction<Message>) => {
+      state.availableRooms?.[state.selectedChatIndex].messages.push(payload);
+    },
+    appendNewRoom: (state, { payload }: PayloadAction<Room>) => {
+      state.availableRooms?.push(payload);
+    },
   },
   extraReducers: (builder) =>
     builder
@@ -53,7 +59,13 @@ const chatSlice = createSlice({
 
 export const chatReducer = chatSlice.reducer;
 
-export const { setCurrentChat, quitChat, receiveMessage } = chatSlice.actions;
+export const {
+  setCurrentChat,
+  quitChat,
+  receiveMessage,
+  appendNewRoom,
+  sendNewMessage,
+} = chatSlice.actions;
 
 export const selectActualChat = (state: RootState) =>
   state.chat.availableRooms?.[state.chat.selectedChatIndex];

@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { database } from "../common/database";
 
 export function findRoomsByUserId(userId: string) {
@@ -41,12 +42,25 @@ export function findRoomByName(name: string) {
   });
 }
 
-export function FindOrCreateRoom(name: string) {
+export function FindOrCreateRoom(room: Prisma.RoomCreateInput, userId: string) {
   return database.room.upsert({
     create: {
-      name,
+      ...room,
     },
-    where: { name },
-    update: {},
+    where: { name: room.name },
+    update: {
+      users: {
+        connect: {
+          id: userId,
+        },
+      },
+    },
+    include: {
+      messages: {
+        include: {
+          author: true,
+        },
+      },
+    },
   });
 }

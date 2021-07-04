@@ -1,10 +1,32 @@
 import { Socket } from "socket.io";
-import {
-  createAdminMessage,
-  createMessage,
-} from "../../services/message.services";
-import { findRoomById } from "../../services/room.services";
-import { deleteUser, findUserById } from "../../services/user.services";
+import { createMessage } from "../../services/message.services";
+import { FindOrCreateRoom, findRoomById } from "../../services/room.services";
+import { findUserById } from "../../services/user.services";
+
+export async function onInit(socket: Socket, _: void, cb: Function) {
+  cb(socket.connected ? null : { message: "could not connect" });
+}
+
+type OnLeavePayload = {
+  userId: string;
+  roomId: string;
+};
+
+export async function onLeave(
+  socket: Socket,
+  payload: OnLeavePayload,
+  cb: Function
+) {
+  socket.leave(payload.roomId);
+
+  const user = await findUserById(payload.userId);
+  if (user) {
+    console.log(`${user?.username} left chat: ${payload.roomId}`);
+    cb(null);
+  } else {
+    cb({ message: "user not found" });
+  }
+}
 
 type JoinPayload = {
   userId: string;
@@ -16,35 +38,19 @@ export async function onJoin(
   payload: JoinPayload,
   cb: Function
 ) {
-  try {
-    const room = await findRoomById(payload.roomId);
-    const user = await findUserById(payload.userId);
+  const room = await findRoomById(payload.roomId);
+  const user = await findUserById(payload.userId);
 
-    if (!room) {
-      return cb({ message: "room dont exist yet" }, null);
-    }
-
-    if (!user) {
-      return cb({ message: "user dont exist yet" }, null);
-    }
-
-    cb(null, room);
-
-    socket.emit(
-      "message",
-      createAdminMessage(`${user?.username}, welcome to the room ${room.name}!`)
-    );
-
-    socket.broadcast
-      .to(room.id)
-      .emit("message", createAdminMessage(`${user?.nickname}, has joined!`));
-
-    socket.join(room.id);
-    console.log(`${user?.username} connected to chat: ${room.name}`);
-  } catch (error) {
-    console.error({ error });
-    cb({ message: error.message }, null);
+  if (!room || !room) {
+    cb({ message: "user or room dont exist yet" }, null);
+    return;
   }
+
+  cb(null, room);
+
+  socket.join(room.id);
+
+  console.log(`${user?.username} connected to chat: ${room.id}`);
 }
 
 type SendMessagePayload = {
@@ -82,22 +88,32 @@ export async function onSendMessage(
   }
 }
 
-type DisconnectPayload = {
+type NewRoomPayload = {
+  name: string;
   userId: string;
-  roomId: string;
 };
 
-export async function onDelete(
-  socket: Socket,
-  payload: DisconnectPayload,
-  cb?: Function
+export async function onNewRoom(
+  _: Socket,
+  payload: NewRoomPayload,
+  cb: Function
 ) {
-  const user = await deleteUser(payload.userId);
+  const user = await findUserById(payload.userId);
+
   if (user) {
-    socket
-      .to(payload.roomId)
-      .emit("message", createAdminMessage(`${user.nickname} has left!`));
-    console.log(`${user.username} disconnected`);
-    cb?.();
+    const room = await FindOrCreateRoom(
+      {
+        name: payload.name,
+        users: {
+          connect: {
+            id: payload.userId,
+          },
+        },
+      },
+      user.id
+    );
+    cb(null, room);
+  } else {
+    cb({ message: "invalid user" }, null);
   }
 }

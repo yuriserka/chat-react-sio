@@ -2,12 +2,10 @@ import { formatRelative, parseISO } from "date-fns";
 import { enUS } from "date-fns/locale";
 
 const formatRelativeLocale: { [k: string]: string } = {
-  lastWeek: "'last' eeee 'at' p",
-  yesterday: "'yesterday at' p",
+  lastWeek: "P",
+  yesterday: "'yesterday'",
   today: "p",
-  tomorrow: "'tomorrow at' p",
-  nextWeek: "eeee 'at' p",
-  other: "eeee",
+  other: "P",
 };
 
 const locale = {
@@ -15,5 +13,6 @@ const locale = {
   formatRelative: (token: string) => formatRelativeLocale[token],
 };
 
-export const formatDate = (date: string) =>
-  formatRelative(parseISO(date), new Date(), { locale });
+export function formatDateRelative(date: string) {
+  return formatRelative(parseISO(date), new Date(), { locale });
+}

@@ -1,6 +1,6 @@
-import { User } from "../models/user";
-import { AppDispatch } from "../store";
-import { getAvailableRooms } from "../store/chat.slice";
+import { User } from "@models/user";
+import { getAvailableRooms } from "@store/chat.slice";
+import { AppDispatch } from "@store/index";
 
 export function redirectUserAfterLogin(
   user: User | null,

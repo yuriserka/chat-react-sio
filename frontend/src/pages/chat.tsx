@@ -1,18 +1,13 @@
+import ChatMessageInput from "@components/chat/message-input";
+import ChatMessageList from "@components/chat/message-list";
+import ChatTopBar from "@components/chat/top-bar";
+import { emitEventJoinRoom, emitEventLeaveChat } from "@services/api/socket";
+import { selectUser } from "@store/auth.slice";
+import { useAppDispatch } from "@store/index";
 import queryString from "query-string";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router";
-import ChatTopBar from "../components/chat-top-bar";
-import ChatMessageInput from "../components/chat-message-input";
-import ChatMessageList from "../components/chat-message-list";
-import {
-  disconnectSocket,
-  initiateSocket,
-  subscribeToChat,
-} from "../services/api/socket";
-import { useAppDispatch } from "../store";
-import { selectUser } from "../store/auth.slice";
-import { receiveMessage } from "../store/chat.slice";
 
 type QueryParams = {
   room: string;
@@ -24,24 +19,26 @@ export default function ChatPage() {
   const dispatch = useAppDispatch();
   const { replace } = useHistory();
 
+  if (!user) {
+    replace("/app");
+  }
+
   useEffect(() => {
     const { room } = queryString.parse(search) as unknown as QueryParams;
 
     if (!user || !room) return;
 
-    initiateSocket(user.id, room, (error) => {
+    emitEventJoinRoom(user.id, room, (error) => {
       if (error) {
         alert(error.message);
         replace("/");
       }
     });
 
-    subscribeToChat((incomingMessage) => {
-      dispatch(receiveMessage(incomingMessage));
-    });
-
     return () => {
-      disconnectSocket();
+      emitEventLeaveChat({ roomId: room, userId: user.id }, (err) => {
+        if (err) console.error({ err });
+      });
     };
   }, [user, replace, dispatch, search]);
 
