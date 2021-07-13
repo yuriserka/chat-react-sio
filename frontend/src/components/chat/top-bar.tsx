@@ -1,4 +1,4 @@
-import { quitChat, selectActualChat } from "@store/chat.slice";
+import { quitChat, selectActualChat, showUsers } from "@store/chat.slice";
 import { useAppDispatch } from "@store/index";
 import { FaArrowLeft, FaUserFriends } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -16,7 +16,11 @@ export default function ChatTopBar() {
       <div className="flex flex-row space-x-4 items-center justify-center">
         <span className="text-lg font-bold">{room?.name}</span>
       </div>
-      <FaUserFriends size={22} />
+      <FaUserFriends
+        className="cursor-pointer"
+        size={22}
+        onClick={() => dispatch(showUsers())}
+      />
     </div>
   );
 }

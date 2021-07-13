@@ -11,6 +11,7 @@ export function findRoomsByUserId(userId: string) {
       },
     },
     include: {
+      users: true,
       messages: {
         include: {
           author: true,
@@ -23,13 +24,6 @@ export function findRoomsByUserId(userId: string) {
 export function findRoomById(id: string) {
   return database.room.findFirst({
     where: { id },
-    include: {
-      messages: {
-        include: {
-          author: true,
-        },
-      },
-    },
   });
 }
 

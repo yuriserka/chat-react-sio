@@ -20,6 +20,7 @@ export type ChatState = {
   selectedChatIndex: number;
   isLoading: boolean;
   availableRooms: Room[] | null;
+  isShowingUsers: boolean;
 };
 
 const chatSlice = createSlice({
@@ -28,6 +29,7 @@ const chatSlice = createSlice({
     selectedChatIndex: -1,
     isLoading: false,
     availableRooms: null,
+    isShowingUsers: false,
   } as ChatState,
   reducers: {
     setCurrentChat: (state, { payload }: PayloadAction<number>) => {
@@ -44,6 +46,9 @@ const chatSlice = createSlice({
     },
     appendNewRoom: (state, { payload }: PayloadAction<Room>) => {
       state.availableRooms?.push(payload);
+    },
+    showUsers: (state) => {
+      state.isShowingUsers = !state.isShowingUsers;
     },
   },
   extraReducers: (builder) =>
@@ -65,6 +70,7 @@ export const {
   receiveMessage,
   appendNewRoom,
   sendNewMessage,
+  showUsers
 } = chatSlice.actions;
 
 export const selectActualChat = (state: RootState) =>
@@ -73,3 +79,5 @@ export const selectActualChat = (state: RootState) =>
 export const selectChats = (state: RootState) => state.chat.availableRooms;
 
 export const selectFetchingChats = (state: RootState) => state.chat.isLoading;
+
+export const selectIsShowingUsers = (state: RootState) => state.chat.isShowingUsers;

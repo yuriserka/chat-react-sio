@@ -19,7 +19,7 @@ export default function RoomList() {
               dispatch(setCurrentChat(index));
             }}
           >
-            <RoomTile {...{ room, counter: index }} />
+            <RoomTile {...{ room, picId: index }} />
           </Link>
         );
       })}

@@ -1,6 +1,7 @@
 import ChatMessageInput from "@components/chat/message-input";
 import ChatMessageList from "@components/chat/message-list";
 import ChatTopBar from "@components/chat/top-bar";
+import ChatUsersList from "@components/chat/users-list";
 import { emitEventJoinRoom, emitEventLeaveChat } from "@services/api/socket";
 import { selectUser } from "@store/auth.slice";
 import { useAppDispatch } from "@store/index";
@@ -44,10 +45,13 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="flex flex-col w-full">
-        <ChatTopBar />
-        <ChatMessageList />
-        <ChatMessageInput />
+      <div className="flex flex-row w-full">
+        <div className="flex flex-col w-full">
+          <ChatTopBar />
+          <ChatMessageList />
+          <ChatMessageInput />
+        </div>
+        <ChatUsersList />
       </div>
     </div>
   );
